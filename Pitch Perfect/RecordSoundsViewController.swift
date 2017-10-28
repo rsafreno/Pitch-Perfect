@@ -23,18 +23,22 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
         // Do any additional setup after loading the view, typically from a nib.
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-    }
-    
     func audioRecordingState(isRecording: Bool) {
         recordingLabel.text = isRecording ? "Recording in Progress" : "Tap to Record"
         recordButton.isEnabled = !isRecording
         stopRecordingButton.isEnabled = isRecording
         // Changes label prompt and button settings depending on whether app is recording
     }
-
+    
+    func audioRecordingError(notRecorded: Bool){
+        let alert = UIAlertController(title: "Attention", message: "The recording was not successful.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .`default`, handler: { _ in
+            NSLog("The \"audioRecordingError\" alert occured.")
+        }))
+        self.present(alert, animated: true, completion: nil)
+        // Prompts an alert for an unsuccessful recording
+    }
+    
     // MARK: Records, Stops, and Stores audio
     
     @IBAction func recordAudio(_ sender: Any) {
@@ -74,7 +78,7 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
         if flag {
         performSegue(withIdentifier: "stopRecording", sender: audioRecorder.url)
         } else {
-            print("recordin was not successful")
+            audioRecordingError(notRecorded: true)
         }
     }
     
